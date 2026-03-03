@@ -1,4 +1,30 @@
-// Mobile menu
+// --- Theme (dark/light) ---
+function setTheme(theme) {
+  document.body.setAttribute('data-theme', theme);
+  localStorage.setItem('amzmax_theme', theme);
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = theme === 'light' ? '☀️' : '🌙';
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('amzmax_theme');
+  if (saved === 'light' || saved === 'dark') return setTheme(saved);
+
+  // Default: dark
+  setTheme('dark');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+
+  const themeBtn = document.getElementById('themeBtn');
+  themeBtn?.addEventListener('click', () => {
+    const current = document.body.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+  });
+});
+
+// --- Mobile menu ---
 const btn = document.getElementById('menuBtn');
 const menu = document.getElementById('mobileMenu');
 
@@ -19,18 +45,4 @@ menu?.querySelectorAll('a').forEach(a => {
 // Footer year
 document.querySelectorAll('[data-year]').forEach(el => {
   el.textContent = String(new Date().getFullYear());
-});
-
-// Form: prevent submit if not configured
-document.querySelectorAll('form[data-proposal-form="true"]').forEach(form => {
-  form.addEventListener('submit', (e) => {
-    const action = form.getAttribute('action') || '';
-    const note = form.querySelector('[data-form-note]');
-    if (action.includes('yourFormID')) {
-      e.preventDefault();
-      if (note) {
-        note.textContent = "Form not connected yet. Replace the Formspree URL in the form action, or contact via WhatsApp/email.";
-      }
-    }
-  });
 });
